@@ -30,8 +30,13 @@ public class KeywordScoreContext {
         }
     }
 
-    public void decreaseScoreByAbsents(Integer absents) {
-        float proportion = (100f / (float)keyword.length()) * absents.floatValue() / 10f;
+    public void decreaseScoreByAbsentsFirstOccurenceIndex(Integer firstOccurrenceIndex) {
+        float scoreProportionByKeywordLength = (100f / (float)keyword.length());
+        float scoreProportionByIndex = (firstOccurrenceIndex != -1)
+                ? (100 - (firstOccurrenceIndex.floatValue() * 10)) / 100
+                : 1; // case if index not found
+        float proportion = scoreProportionByKeywordLength * scoreProportionByIndex;
+
         System.out.print(" [proportion to decreace = "+proportion+"] ");
 
         decreaseScore(proportion);

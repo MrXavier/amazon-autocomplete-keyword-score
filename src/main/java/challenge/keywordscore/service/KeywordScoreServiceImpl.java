@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class KeywordScoreServiceImpl implements KeywordScoreService {
 
-    public static final String SPACE_CHAR = " ";
+    public static final String SPACE = " ";
+
     @Autowired
     private AmazonClient amazonClient;
 
@@ -42,20 +42,49 @@ public class KeywordScoreServiceImpl implements KeywordScoreService {
         return keywordScore.getScoreAsIntRound();
     }
 
-    private void processKeywordScore(KeywordScoreContext keywordScore, JsonNode json){
+    // TODO Move bellow code to a class like "KeywordScoreProcessor" for better modularization and cohersion
+    private void processKeywordScore(KeywordScoreContext keywordScore, JsonNode json) {
         List<String> suggestions = json.getArray().getJSONArray(1).toList();
-
-        Integer nOccurrencies = (int) suggestions.stream() // TODO: Improve the occurrencies match to accept multiple words
-                .filter(e -> Arrays.asList(e.split(SPACE_CHAR)).contains(keywordScore.getKeyword()))
-                .count();
-
-        if(nOccurrencies == 10) {
+        if(suggestions.size() == 0) {
+            keywordScore.setScore(0f);
             keywordScore.setFinished(true);
             return;
         }
 
-        int nAbsents = 10 - nOccurrencies;
-        System.out.print(" [nAbsents = "+nAbsents+"] ");
-        keywordScore.decreaseScoreByAbsents(nAbsents);
+        Integer firstOccurrenceIndex = -1;
+        for (int i = 0; i < suggestions.size(); i++) {
+            if(isKeywordMatchInSuggestion(suggestions.get(i), keywordScore.getKeyword())) {
+                firstOccurrenceIndex = i;
+                break;
+            }
+        }
+
+        if(firstOccurrenceIndex == 0) {
+            keywordScore.setFinished(true);
+            return;
+        }
+
+        System.out.print(" [firstOccurrenceIndex = "+firstOccurrenceIndex+"] ");
+        keywordScore.decreaseScoreByAbsentsFirstOccurenceIndex(firstOccurrenceIndex);
+    }
+
+    private boolean isKeywordMatchInSuggestion(String suggestion, String keyword) {
+        String[] keywordWords = keyword.split(SPACE);
+        String[] suggestionWords = suggestion.split(SPACE);
+
+        Boolean matched = false;
+        int j = 0;
+        for (int i = 0; i < suggestionWords.length; i++) {
+            if(suggestionWords[i].equals(keywordWords[j])){
+                j++;
+                if(j == keywordWords.length){
+                    matched = true;
+                    break;
+                }
+            } else {
+                j = 0;
+            }
+        }
+        return matched;
     }
 }
