@@ -22,7 +22,7 @@ $ mvn spring-boot:run
 GET http://localhost:8080/estimate?keyword=iphone+charger
 ```
 
-## Usage In Local Machine
+## Considerations
 
 a. What assumptions did you make?
 
