@@ -1,6 +1,29 @@
 # amazon-autocomplete-keyword-score
 Project to estimate keyword score of amazon autocomplete API.
 
+## Usage In Local Machine
+
+###### Requirements
+```
+JDK - Java version 1.8.
+
+Any Java IDE with support Maven.
+
+Maven for build and dependecies.
+
+
+###### After download the code, to install the application:
+$ mvn clean package
+
+###### To run the application the maven command:
+$ mvn spring-boot:run
+
+###### To get the keyword score
+GET http://localhost:8080/estimate?keyword=iphone+charger
+```
+
+## Usage In Local Machine
+
 a. What assumptions did you make?
 	The keyword can have more than one word, in other words its a sentence. So "iphone x charger" is one keyword.
 	The order of the returned keywords from Amazon API are sorted by search volume.
@@ -24,27 +47,6 @@ d. How precise do you think your outcome is and why?
 	If you search for "iphone charger" you got a score of 100 and it will first appear when you search for "iphone" and it's prefixes, like "i", "ip", "iph", and so on. If you search for "smartphone" you will got a score of 50, which is the exact number of suggestions it is returned with this keyword (this is because the keyword has 10 letters resulting in 100 suggested results).
 
 	Those are some hypotesis that can proof that the solution is precise.
-
-## Usage In Local Machine
-
-###### Requirements
-```
-JDK - Java version 1.8.
-
-Any Java IDE with support Maven.
-
-Maven for build and dependecies.
-
-
-###### After download the code, to install the application:
-$ mvn clean package
-
-###### To run the application the maven command:
-$ mvn spring-boot:run
-
-###### To get the keyword score
-GET http://localhost:8080/estimate?keyword=iphone+charger
-```
 
 # Future improvements
 1. Improve Amazon API request time
