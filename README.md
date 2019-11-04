@@ -26,8 +26,10 @@ GET http://localhost:8080/estimate?keyword=iphone+charger
 
 a. What assumptions did you make?
 
-The keyword can have more than one word, in other words its a sentence. So "iphone x charger" is one keyword.
-The order of the returned keywords from Amazon API are sorted by search volume.
+I assume that if you type the first letter of a keyword and it appears in the first place in suggestion set, it means that it has the highest score possible. I also assume that if I type the entire keyword and it doesn't appear in the suggestion list it probably has the lowest score or it has not event a score at all. Additionally I also assume that for every prefix of the keyword, considering if it appears in the resulted suggestion and its position I can estimate how it influences in its score. Then I use that to implement the algorithm to estimate the keyword score.
+
+I also assument that the keyword can have more than one word, in other words its a sentence. So "iphone x charger" is one keyword.
+I also assument that the order of the returned keywords from Amazon API are sorted by search volume.
 
 b. How does your algorithm work?
 
@@ -41,7 +43,7 @@ If the index of the first occurence of the keyword in the suggestion list, it me
 
 c. Do you think the (*hint) that we gave you earlier is correct and if so - why?
 
-The hint is not correct. The 10 returned words are ordered by search-volume in a descenant way (the firsts elements have high search-volume than the lower elements). Additionally doesn't make sense from amazon to send an unsorted order of keyword if the intention is to show the most searched keywords in the top of the results. Also if the order is insignificant we should different order results for the same prefix, which is not true.
+The hint is not correct. The 10 returned words are ordered by search-volume in a descenant way (the firsts elements have high search-volume than the lower elements). It doesn't make sense from amazon to send an unsorted order of keyword if the intention is to show the most searched keywords in the top of the results. Also if the order is insignificant we should see different order results for the same prefix, which is not true.
 
 
 d. How precise do you think your outcome is and why?
