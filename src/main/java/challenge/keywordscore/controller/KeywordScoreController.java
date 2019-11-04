@@ -21,16 +21,15 @@ public class KeywordScoreController {
 
     @RequestMapping("estimate")
     public ResponseEntity<KeywordScoreResponse> estimate(@RequestParam String keyword) {
-        keyword = keyword.toLowerCase();
-
         if(StringUtils.isEmpty(keyword)) {
             KeywordScoreResponse resp = new KeywordScoreResponse(keyword, null, Arrays.asList("Keyword should not be empty or blank"));
             return new ResponseEntity<>(resp, HttpStatus.CONFLICT);
         }
 
+        keyword = keyword.toLowerCase();
         Integer estimation = keywordScoreService.estimate(keyword);
-        KeywordScoreResponse response = new KeywordScoreResponse(keyword, estimation, null);
 
+        KeywordScoreResponse response = new KeywordScoreResponse(keyword, estimation, null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -30,12 +30,22 @@ public class KeywordScoreContext {
         }
     }
 
+    /**
+     * It takes the firstOccurrenceIndex and calculate an adjustment to the score based on that number. The formula is:
+     * (100 / keyword.lenth) * (100 - (firstOccurrenceIndex * 10))
+     * The first part calculate the value to adjust the score based on the keyword length. This is done because we are
+     * processing each letter at a time for the whole keyword.
+     * The second part will calculate how much proportion of the previous adjustment value the score will be adjust
+     * based on the position it first appears in the results.
+     *
+     * @param firstOccurrenceIndex in the amazon suggestions
+     */
     public void decreaseScoreByAbsentsFirstOccurenceIndex(Integer firstOccurrenceIndex) {
-        float scoreProportionByKeywordLength = (100f / (float)keyword.length());
+        float scoreAdjustmentByKeywordLength = (100f / (float)keyword.length());
         float scoreProportionByIndex = (firstOccurrenceIndex != -1)
                 ? (100 - (firstOccurrenceIndex.floatValue() * 10)) / 100
                 : 1; // case if index not found
-        float proportion = scoreProportionByKeywordLength * scoreProportionByIndex;
+        float proportion = scoreAdjustmentByKeywordLength * scoreProportionByIndex;
 
         System.out.print(" [proportion to decreace = "+proportion+"] ");
 
